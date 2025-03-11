@@ -1,8 +1,11 @@
-@include('common.header')
+@extends('layout')
+{{-- @extends('layout') --}}
 
+{{-- @include('common.header') --}}
+@section('content')
 <form id="editUser" class="mainBody ms-3" action="{{ route('users.store') }}" method="POST">
     @csrf
-                @method('POST')
+    @method('POST')
     {{-- <label for="name">Name</label>
     <input name="name" type="text">
 
@@ -26,8 +29,8 @@
     <input class="form-control w-50" name="email" type="email" required >
 
     <label class="form-label" for="phone">Phone</label>
-    {{-- <input class="form-control w-50" id="phoneInput" name="phone" type="string" pattern="[0-9]"  min="0" length="10" required value="{{(int)$user->phone}}"> --}}
-    <input type="text" class="form-control w-50" name="phone"  />
+    <input class="form-control w-50" id="phoneInput" name="phone" type="string" pattern="[0-9]"  min="0" length="10" required >
+    {{-- <input type="text" class="form-control w-50" name="phone"  /> --}}
 
     <label class="form-label" for="address">Address</label>
     <input class="form-control w-50" name="address" type="text" required >
@@ -38,5 +41,6 @@
 
     <button class="btn mt-3" type="submit">Save</button>
 </form>
+@stop
 
-@include('common.footer')
+{{-- @include('common.footer') --}}
