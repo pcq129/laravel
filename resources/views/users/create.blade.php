@@ -1,3 +1,4 @@
+@include('common.header')
 
 <form id="editUser" class="mainBody ms-3" action="{{ route('users.store') }}" method="POST">
     @csrf

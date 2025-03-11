@@ -45,6 +45,8 @@ class UsersController extends Controller
         $user->password = $request->get('password');
         $user->save();
 
+        return redirect()->route('users.index');
+
 
 
     }
@@ -52,44 +54,45 @@ class UsersController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($user)
+    public function show($id)
     {
+        $user = Users::find($id);
         return view('users.show',compact('user'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($user)
+    public function edit($id)
     {
+        $user = Users::find($id);
         return view('users.edit',compact('user'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,  $user)
+    public function update(Request $request,  $id)
     {
+        $user = Users::find($id);
+        $user->first_name = $request->get('firstName');
+        $user->last_name = $request->get('lastName');
+        $user->user_name = $request->get('userName');
+        $user->phone = $request->get('phone');
+        $user->email = $request->get('email');
+        $user->address = $request->get('address');
+        $user->save();
 
-        $user->update(
-            $user->first_name = $request->get('firstName'),
-            $user->last_name = $request->get('lastName'),
-            $user->user_name = $request->get('userName'),
-            $user->phone = $request->get('phone'),
-            $user->email = $request->get('email'),
-            $user->address = $request->get('address'),
-            // $user->password = $request->get('password'),
-        );
-
-        return redirect()->route('users.index');
+        return redirect()->route('home');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($user)
+    public function destroy($id)
     {
+        $user = Users::find($id);
         $user->delete();
-        return redirect()->route('users.index')->with('success','Product deleted successfully');
+        return redirect()->route('users.index');
     }
 }

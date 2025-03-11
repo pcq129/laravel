@@ -15,8 +15,7 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           {{-- <button type="button" class="btn btn-primary">Delete</button> --}}
-          {{-- <button type="button" class="btn btn-danger">Delete</button> --}}
-          <label for="submit-form" class="btn btn-danger"   tabindex="0">Submit</label>
+          <label for="submit-form" class="btn btn-danger" tabindex="0">Submit</label>
         </div>
       </div>
     </div>
@@ -45,16 +44,17 @@
             <td>{{$user->address}}</td>
             <td>
                 <a class="btn btn-info" href="{{ route('users.show',$user->id) }}">Show</a>
-                        <a class="btn btn-primary" href="{{ route('users.edit',$user->id) }}">Edit</a>
-                        <form action="{{ route('users.destroy',$user->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <a class="btn btn-primary" href="{{ route('users.edit',$user->id) }}">Edit</a>
+                <form action="{{ route('users.destroy',$user->id) }}" method="POST" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                        <button type="submit" class="btn btn-danger"  data-bs-target="#exampleModal">
                                 Delete
-                              </button>
+                        </button>
+                        {{-- <button type="submit" class="btn btn-danger">Delete</button> --}}
 
-                            <input type="submit" id="submit-form" hidden>
-                        </form>
+                        <input type="submit" id="submit-form" value="{{ $user }}" hidden>
+                </form>
             </td>
            </tr>
         @endforeach
@@ -63,7 +63,7 @@
 </table>
 <div class="d-flex">
 
-<a href="create" class="btn rounded bg-primary text-white  mt-2 mb-2">Add User</a>
+<a href="users/create" class="btn rounded bg-primary text-white  mt-2 mb-2">Add User</a>
 </div>
 </div>
 

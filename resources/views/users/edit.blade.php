@@ -1,6 +1,6 @@
 @include('common.header')
 
-<form id="editUser" class="mainBody ms-3" action="{{ route('users.update', $user) }}" method="POST">
+<form id="editUser" class="mainBody ms-3" action="{{ route('users.update', $user->id) }}" method="POST">
     @csrf
                 @method('PUT')
     {{-- <label for="name">Name</label>
