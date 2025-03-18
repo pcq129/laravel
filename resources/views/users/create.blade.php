@@ -41,6 +41,6 @@
 
     <button class="btn mt-3" type="submit">Save</button>
 </form>
-@stop
+@endsection
 
 {{-- @include('common.footer') --}}

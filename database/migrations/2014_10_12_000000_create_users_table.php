@@ -18,20 +18,20 @@ return new class extends Migration
             $table->increments('id')->unique();
             $table->string('phone', 20);
             $table->string('email', 50)->unique();
-            $table->string('first_name', 13);
-            $table->string('last_name', 13);
+            $table->string('first_name', 20);
+            $table->string('last_name', 20);
             $table->string('user_name', 30);
-            $table->string('address', 100);
-            $table->string('country', 17)->default('India');
+            $table->string('address', 150);
+            $table->string('country', 50)->default('India');
             $table->string('state', 17)->default('Gujarat');;
             $table->string('city', 17)->default('Ahmedabad');;
             $table->integer('zipcode')->default('380041');;
-            // $table->string('role',10)->required();
-            $table->string('password', 30)->required();
+            $table->string('role',10)->required()->default('user');
+            $table->string('password', 180)->required();
             $table->timestamp('email_verified_at')->nullable();
-            $table->softDeletes();
             $table->rememberToken();
-            $table->timestamps();
+            $table->softDeletes();
+            $table->timestamps( );
         });
     }
 

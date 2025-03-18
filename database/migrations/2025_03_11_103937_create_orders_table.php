@@ -12,7 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id')->unique()->unsigned();
+            // $table->id();
+            $table->integer('customer_id');
+            $table->enum('payment_mode',['Cash', 'Online']);
+            $table->enum('status', ['completed', 'pending', '-']);
+            $table->integer('amount');
+            $table->enum('rating', ['1','2','3','4','5']);
+            $table->string('comment', 180);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
