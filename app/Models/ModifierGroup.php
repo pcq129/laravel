@@ -18,4 +18,16 @@ class ModifierGroup extends Model
     {
         return $this->belongsToMany(Modifier::class,'modifier_modifier_group_mapper', 'id', 'id')->withTimestamps();
     }
+
+    protected $hidden = [
+        'deleted_at',
+        'updated_at',
+        'created_at',
+        'id'
+    ];
+
+    protected $fillable = [
+        'name',
+        'description',
+    ];
 }

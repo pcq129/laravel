@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('category_id');
             $table->integer('quantity');
             $table->integer('rate');
-            $table->integer('tax');
+            $table->integer('tax')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

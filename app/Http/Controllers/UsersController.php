@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Users;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
@@ -12,7 +12,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $users = Users::all();
+        $users = User::all();
         return view('users.index',compact('users'));
     }
 
@@ -35,15 +35,15 @@ class UsersController extends Controller
         //     'description' => 'required|string|max:255',
         // ]);
 
-        $user = new Users;
-        $user->first_name = $request->get('firstName');
-        $user->last_name = $request->get('lastName');
-        $user->user_name = $request->get('userName');
-        $user->phone = $request->get('phone');
-        $user->email = $request->get('email');
-        $user->address = $request->get('address');
-        $user->password = $request->get('password');
-        $user->save();
+            $user = new User;
+            $user->first_name = $request->get('firstName');
+            $user->last_name = $request->get('lastName');
+            $user->user_name = $request->get('userName');
+            $user->phone = $request->get('phone');
+            $user->email = $request->get('email');
+            $user->address = $request->get('address');
+            $user->password = $request->get('password');
+            $user->save();
 
         return redirect()->route('users.index');
 
@@ -56,7 +56,7 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        $user = Users::find($id);
+        $user = User::find($id);
         return view('users.show',compact('user'));
     }
 
@@ -65,7 +65,7 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        $user = Users::find($id);
+        $user = User::find($id);
         return view('users.edit',compact('user'));
     }
 
@@ -74,7 +74,7 @@ class UsersController extends Controller
      */
     public function update(Request $request,  $id)
     {
-        $user = Users::find($id);
+        $user = User::find($id);
         $user->first_name = $request->get('firstName');
         $user->last_name = $request->get('lastName');
         $user->user_name = $request->get('userName');
@@ -91,7 +91,7 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        $user = Users::find($id);
+        $user = User::find($id);
         $user->delete();
         return redirect()->route('users.index');
     }
