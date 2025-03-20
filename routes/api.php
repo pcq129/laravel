@@ -38,58 +38,58 @@ Route::middleware(['auth:api'])->group(function () {
     //users-api
 
     //index user
-    Route::get('/view-users', [userController::class, 'index']);
+    Route::get('/users/index', [userController::class, 'index']);
 
     //view user
-    Route::get('/user', [userController::class, 'show']);
+    Route::get('/user/show', [userController::class, 'show']);
 
     //add user
-    Route::post('/add-user', [userController::class, 'store']);
+    Route::post('/user/add', [userController::class, 'store']);
 
     //delete user
-    Route::delete('/remove-user', [userController::class, 'destroy']);
+    Route::delete('/user/remove', [userController::class, 'destroy']);
 
     //update user
-    Route::post('/update-user', [userController::class, 'update']);
+    Route::post('/user/update', [userController::class, 'update']);
 
 
 
     //items-apis
 
     //get all items
-    Route::get('/all-items', [ItemController::class, 'index']);
+    Route::get('/items/index', [ItemController::class, 'index']);
 
     //add item
-    Route::post('/add-item', [ItemController::class, 'store']);
+    Route::post('/items/store', [ItemController::class, 'store']);
 
 
     //view item
-    Route::get('/item', [ItemController::class, 'show']);
+    Route::get('/items/show', [ItemController::class, 'show']);
 
     //delete item
-    Route::delete('/remove-item', [ItemController::class, 'destroy']);
+    Route::delete('/items/destroy', [ItemController::class, 'destroy']);
 
     //update item
-    Route::post('/update-item', [ItemController::class, 'update']);
+    Route::post('/items/update', [ItemController::class, 'update']);
 
 
 
     //item-category apis
 
     //index item-categories
-    Route::get('/view-item-categories', [ItemCategoryController::class, 'index']);
+    Route::get('/category/index', [ItemCategoryController::class, 'index']);
 
     //view item-category
-    Route::get('/item-category', [ItemCategoryController::class, 'show']);
+    Route::get('/category/show', [ItemCategoryController::class, 'show']);
 
     //add item-category
-    Route::post('/add-item-category', [ItemCategoryController::class, 'store']);
+    Route::post('/category/store', [ItemCategoryController::class, 'store']);
 
     //delete item-cateogory
-    Route::delete('/remove-item-category', [ItemCategoryController::class, 'destroy']);
+    Route::delete('/category/destroy', [ItemCategoryController::class, 'destroy']);
 
     //update item-cateogory
-    Route::post('/update-item-category', [ItemCategoryController::class, 'update']);
+    Route::post('/category/update', [ItemCategoryController::class, 'update']);
 
 
 

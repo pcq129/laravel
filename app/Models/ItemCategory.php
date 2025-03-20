@@ -16,8 +16,8 @@ class ItemCategory extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function item(): HasMany
+    public function item($id): HasMany
     {
-        return $this->hasMany(Item::class, 'category_id', 'id');
+        return $this->hasMany(Item::class, 'category_id', $id);
     }
 }
