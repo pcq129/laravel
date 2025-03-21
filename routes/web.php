@@ -18,7 +18,7 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::resource('users', UsersController::class);
+Route::resource('usersview', UsersController::class);
 Route::get('yieldexample', function (){
     return view('test.');
 });

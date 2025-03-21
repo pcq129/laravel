@@ -18,7 +18,8 @@ class ItemCategoryController extends Controller
         return response()->json([
             'code' => '200',
             'status' => 'true',
-            'message' => $categories,
+            'data'=> $categories,
+            'message' => 'categories fetched successfully',
         ], 200);
     }
 
@@ -66,7 +67,7 @@ class ItemCategoryController extends Controller
             return response()->json(['code' => 400, 'success' => 'false', 'message' => $validator->messages(),], 200);
         }
 
-        
+
         $itemCategory = ItemCategory::find($request->id);
         if ($itemCategory) {
             return response()->json([

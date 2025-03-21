@@ -34,7 +34,7 @@ class ItemController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:50|unique:App\Models\Item,name',
             'description' => 'required|string|max:180',
-            'category_id' => 'required|min_digits:2|max_digits:3',
+            'category_id' => 'required|min_digits:2|max_digits:3|exists:item_categories,id',
             'rate' => 'required|gt:0|lte:500',
             'quantity' => 'required|gt:0|lte:20',
             'tax' => 'required|gt:8|lte:30'
@@ -107,7 +107,7 @@ class ItemController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:50|unique:App\Models\Item,name,'.$request->id.',id',
             'description' => 'required|string|max:180',
-            'category_id' => 'required|min_digits:2|max_digits:3',
+            'category_id' => 'required|min_digits:2|max_digits:3|exists:item_categories,id',
             'rate' => 'required|gt:0|lte:500',
             'quantity' => 'required|gt:0|lte:20',
             'tax' => 'required|gt:8|lte:30'

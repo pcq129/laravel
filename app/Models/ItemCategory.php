@@ -14,10 +14,13 @@ class ItemCategory extends Model
     /**
      * Get all of the item for the ItemCategory
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function item($id): HasMany
+
+    public function item():HasMany
     {
-        return $this->hasMany(Item::class, 'category_id', $id);
-    }
+        return $this->hasMany(Item::class, 'category_id', 'id');
+    }   
+
+
 }

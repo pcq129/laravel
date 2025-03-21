@@ -31,7 +31,7 @@ class ModifierController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:50|unique:App\Models\Modifier,name',
             'description' => 'required|string|max:180',
-            'modifier_group_id' => 'required|min_digits:2|max_digits:3',
+            'modifier_group_id' => 'required|min_digits:2|max_digits:3|exists:modifier_groups,id',
             'rate' => 'required|gt:0|lte:500',
             'quantity' => 'required|gt:0|lte:20',
             'unit' => 'required|in:grams,pieces'
@@ -101,7 +101,7 @@ class ModifierController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:50|unique:App\Models\Modifier,name,'.$request->id.',id',
             'description' => 'required|string|max:180',
-            'modifier_group_id' => 'required|min_digits:2|max_digits:3',
+            'modifier_group_id' => 'required|min_digits:2|max_digits:3|exists:modifier_groups,id',
             'rate' => 'required|gt:0|lte:500',
             'quantity' => 'required|gt:0|lte:20',
             'unit' => 'required|in:grams,pieces',

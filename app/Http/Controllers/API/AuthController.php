@@ -22,7 +22,7 @@ class AuthController extends Controller
     // $request->validate([
     //     'email' => 'required|email',
     //     'password' => 'required'
-    // ]);  
+    // ]);
 
         // $encrypt = bcrypt($credentials);
 
@@ -64,7 +64,7 @@ class AuthController extends Controller
     // Get Authenticated User
     public function me()
     {
-        return response()->json(Auth::user());
+        return response()->json(Auth::authenticate());
     }
 
     // Logout User
