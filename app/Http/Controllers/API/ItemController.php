@@ -6,7 +6,7 @@ use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
-
+use App\Models\ItemCategory;
 
 class ItemController extends Controller
 {
@@ -16,11 +16,14 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $items = Item::all();
+        $items = Item::with(['Category'=> function($query){
+            $query->select ('id','name');
+        }])->get();
         return response()->json([
             'code' => '200',
             'status' => 'true',
-            'message' => $items,
+            'data' => $items,
+            'message'=> 'items fetched successfully'
         ], 200);
     }
 
@@ -46,7 +49,7 @@ class ItemController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['code' => 400, 'success' => 'false', 'message' => $validator->messages(),], 200);
+            return response()->json(['code' => 400, 'success' => 'false', 'message' => ($validator->messages()),], 200);
         }
 
 
@@ -139,9 +142,9 @@ class ItemController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        $item = Item::find($request->id);
+        $item = Item::find($id);
         if($item){
             $item->delete();
             return response()->json([

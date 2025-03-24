@@ -4,16 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\ModifierGroup;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Modifier extends Model
 {
     use HasFactory, SoftDeletes;
 
-    public function modifierGroups():BelongsToMany
+    public function ModifierGroup():BelongsTo
     {
-        return $this->belongsToMany(ModifierGroup::class, 'modifier_modifier_group_mapper', 'id','id')->withTimestamps();
+        return $this->belongsTo(ModifierGroup::class, 'modifier_group_id','id');
     }
 
     protected $hidden = [

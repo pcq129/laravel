@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Item;
 
 class ItemCategory extends Model
 {
@@ -20,7 +21,13 @@ class ItemCategory extends Model
     public function item():HasMany
     {
         return $this->hasMany(Item::class, 'category_id', 'id');
-    }   
+    }
+
+    protected $hidden = [
+        'deleted_at',
+        'updated_at',
+        'created_at',
+    ];
 
 
 }

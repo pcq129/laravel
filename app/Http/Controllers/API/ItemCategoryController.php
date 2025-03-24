@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Models\ItemCategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
 class ItemCategoryController extends Controller
@@ -24,6 +25,12 @@ class ItemCategoryController extends Controller
     }
 
 
+    // function for getting categories but with only name and id
+    public function getList(){
+        $categories = ItemCategory::all(['name', 'id']);
+        return $categories;
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -31,8 +38,12 @@ class ItemCategoryController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:50|unique:App\Models\ItemCategory,name',
+            'name' => ['required','string','max:50',Rule::unique('item_categories', 'name')->withoutTrashed()],
             'description' => 'required|string|max:180',
+        ],[
+            'name.unique' => 'category with the same name already exists',
+            'name' => 'invalid name',
+            'description.max' => 'description should be of maximum 180 characters'
         ]);
 
         if ($validator->fails()) {
@@ -57,18 +68,18 @@ class ItemCategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request)
+    public function show($id)
     {
 
-        $validator = Validator::make($request->all(), [
-            'id'=>'required'
-        ]);
-        if($validator->fails()){
-            return response()->json(['code' => 400, 'success' => 'false', 'message' => $validator->messages(),], 200);
-        }
+        // $validator = Validator::make($request->all(), [
+        //     'id'=>'required'
+        // ]);
+        // if($validator->fails()){
+        //     return response()->json(['code' => 400, 'success' => 'false', 'message' => $validator->messages(),], 200);
+        // }
 
 
-        $itemCategory = ItemCategory::find($request->id);
+        $itemCategory = ItemCategory::find($id);
         if ($itemCategory) {
             return response()->json([
                 'code' => '200',
@@ -95,8 +106,14 @@ class ItemCategoryController extends Controller
 
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:50|unique:App\Models\ItemCategory,name,' . $request->id . ',id',
+            // 'name' =>
+            'name' => ['required','string','max:50',Rule::unique('item_categories', 'name')->withoutTrashed()->ignore($request->id)],
+            // 'name' => Rule::unique('ItemCategory', 'name')->ignore($ItemCategory->name)->whereNull('deleted_at')->orWhereNotNull('deleted-at');
             'description' => 'required|string|max:180',
+        ],[
+            'name.unique' => 'category with the same name already exists',
+            'name' => 'invalid name',
+            'description.max' => 'description should be of maximum 180 characters'
         ]);
 
         if ($validator->fails()) {
@@ -125,9 +142,9 @@ class ItemCategoryController extends Controller
     // /**
     //  * Remove the specified resource from storage.
     //  */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        $itemCategory = ItemCategory::find($request->id);
+        $itemCategory = ItemCategory::find($id);
         if ($itemCategory) {
             $itemCategory->delete();
 

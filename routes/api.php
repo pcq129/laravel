@@ -7,6 +7,7 @@ use App\Http\Controllers\API\ItemCategoryController;
 use App\Http\Controllers\API\ItemController;
 use App\Http\Controllers\API\ModifierController;
 use App\Http\Controllers\API\ModifierGroupController;
+use App\Http\Middleware\Authenticate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,11 +22,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'], true)->name('login');
 
-
+// add in [] in middleware group to implement
 Route::middleware(['auth:api'])->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
+    Route::get('/categorylist', [ItemCategoryController::class, 'getList']);
+    Route::get('/modifier-group-list', [ModifierController::class, 'getList']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::resource('/items', ItemController::class);

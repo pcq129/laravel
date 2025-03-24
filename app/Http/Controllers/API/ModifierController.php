@@ -4,23 +4,32 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Modifier;
+use App\Models\ModifierGroup;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 
-class ModifierController extends Controller
+    class ModifierController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $modifiers = Modifier::all();
+        $modifiers = Modifier::with(['ModifierGroup'=> function($query){
+            $query->select ('id','name');
+        }])->get();
         return response()->json([
             'code' => '200',
             'status' => 'true',
-            'message' => $modifiers,
+            'data' => $modifiers,
+            'message'=>'modifiers fetched successfully'
         ], 200);
+    }
+
+    public function getList(){
+        $modifier_group = ModifierGroup::all(['name', 'id']);
+        return $modifier_group;
     }
 
     /**
