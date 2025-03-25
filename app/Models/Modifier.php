@@ -21,7 +21,6 @@ class Modifier extends Model
         'deleted_at',
         'updated_at',
         'created_at',
-        'id'
     ];
 
     protected $fillable = [

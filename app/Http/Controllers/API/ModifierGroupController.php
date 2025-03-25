@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ModifierGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Validation\Rule;
 
 class ModifierGroupController extends Controller
 {
@@ -31,6 +31,7 @@ class ModifierGroupController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'name' => ['required','string','max:50',Rule::unique('modifier_groups', 'name')->withoutTrashed()],
             'name' => 'required|string|max:50|unique:App\Models\ModifierGroup,name',
             'description' => 'required|string|max:180',
         ]);
@@ -92,7 +93,8 @@ class ModifierGroupController extends Controller
 
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:50|unique:App\Models\ModifierGroup,name,' . $request->id . ',id',
+            'name' => ['required','string','max:50',Rule::unique('modifier_groups', 'name')->withoutTrashed()->ignore($request->id)],
+            // 'name' => 'required|string|max:50|unique:App\Models\ModifierGroup,name,' . $request->id . ',id',
             'description' => 'required|string|max:180',
         ]);
 
@@ -122,9 +124,9 @@ class ModifierGroupController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        $modifierGroup = ModifierGroup::find($request->id);
+        $modifierGroup = ModifierGroup::find($id);
         if ($modifierGroup) {
             $modifierGroup->delete();
 

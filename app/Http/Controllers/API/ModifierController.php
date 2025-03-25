@@ -7,6 +7,7 @@ use App\Models\Modifier;
 use App\Models\ModifierGroup;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 
     class ModifierController extends Controller
@@ -38,7 +39,8 @@ use Illuminate\Http\Request;
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:50|unique:App\Models\Modifier,name',
+            'name' => ['required','string','max:50',Rule::unique('modifiers', 'name')->withoutTrashed()],
+            // 'name' => 'required|string|max:50|unique:App\Models\Modifier,name',
             'description' => 'required|string|max:180',
             'modifier_group_id' => 'required|min_digits:2|max_digits:3|exists:modifier_groups,id',
             'rate' => 'required|gt:0|lte:500',
@@ -108,7 +110,9 @@ use Illuminate\Http\Request;
         $modifier = Modifier::find($request->id);
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:50|unique:App\Models\Modifier,name,'.$request->id.',id',
+            'name' => ['required','string','max:50',Rule::unique('modifiers', 'name')->withoutTrashed()->ignore($request->id)],
+
+            // 'name' => 'required|string|max:50|unique:App\Models\Modifier,name,'.$request->id.',id',
             'description' => 'required|string|max:180',
             'modifier_group_id' => 'required|min_digits:2|max_digits:3|exists:modifier_groups,id',
             'rate' => 'required|gt:0|lte:500',
@@ -140,18 +144,18 @@ use Illuminate\Http\Request;
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
 
-        $validator = Validator::make($request->all(), [
-            'id'=>'required'
-        ]);
-        if($validator->fails()){
-            return response()->json(['code' => 400, 'success' => 'false', 'message' => $validator->messages(),], 200);
-        }
+        // $validator = Validator::make($id->all(), [
+        //     'id'=>'required'
+        // ]);
+        // if($validator->fails()){
+        //     return response()->json(['code' => 400, 'success' => 'false', 'message' => $validator->messages(),], 200);
+        // }
 
 
-        $modifier = Modifier::find($request->id);
+        $modifier = Modifier::find($id);
         if($modifier){
             $modifier->delete();
             return response()->json([

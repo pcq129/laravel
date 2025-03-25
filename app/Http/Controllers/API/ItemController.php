@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use App\Models\ItemCategory;
+use App\Enums\ServerStatus;
+use Illuminate\Validation\Rule;
 
 class ItemController extends Controller
 {
@@ -18,7 +20,7 @@ class ItemController extends Controller
     {
         $items = Item::with(['Category'=> function($query){
             $query->select ('id','name');
-        }])->get();
+        }])->orderBy('created_at', 'desc')->get();
         return response()->json([
             'code' => '200',
             'status' => 'true',
@@ -35,17 +37,18 @@ class ItemController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:50|unique:App\Models\Item,name',
+            'name' => ['required','string','max:50',Rule::unique('item_categories', 'name')->withoutTrashed()],
             'description' => 'required|string|max:180',
             'category_id' => 'required|min_digits:2|max_digits:3|exists:item_categories,id',
-            'rate' => 'required|gt:0|lte:500',
-            'quantity' => 'required|gt:0|lte:20',
-            'tax' => 'required|gt:8|lte:30'
-
+            'rate' => 'required|numeric',
+            'quantity' => 'required|numeric',
+            'tax' => 'required|numeric',
+            // 'unit'=>  [Rule::enum(ServerStatus::class)->only([ServerStatus::gms, ServerStatus::pcs])],
+            'unit'=> 'required'
         ], [
             'name.unique' => 'please add unique name',
             'name' => 'invalid name',
-            'rate' => 'invlaid price'
+            'rate' => 'invvlid price'
         ]);
 
         if ($validator->fails()) {
@@ -61,6 +64,7 @@ class ItemController extends Controller
         $newItem->quantity = $request->quantity;
         $newItem->rate = $request->rate;
         $newItem->tax = $request->tax;
+        $newItem->unit = $request->unit;
         $newItem->save();
 
         return response()->json([
@@ -108,16 +112,19 @@ class ItemController extends Controller
         $item = Item::find($request->id);
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:50|unique:App\Models\Item,name,'.$request->id.',id',
+            'name' => ['required','string','max:50',Rule::unique('item_categories', 'name')->withoutTrashed()->ignore($request->id)],
+            // 'name' => 'required|string|max:50|unique:App\Models\Item,name,'.$request->id.',id',
             'description' => 'required|string|max:180',
             'category_id' => 'required|min_digits:2|max_digits:3|exists:item_categories,id',
-            'rate' => 'required|gt:0|lte:500',
-            'quantity' => 'required|gt:0|lte:20',
-            'tax' => 'required|gt:8|lte:30'
+            'rate' => 'required|numeric',
+            'quantity' => 'required|numeric',
+            'tax' => 'required|numeric',
+            // 'unit'=> [Rule::enum(ServerStatus::class)->only([ServerStatus::gms, ServerStatus::pcs])],
+            'unit' => 'required'
         ], [
             'name->unique' => 'uniq name',
             // 'name'=> 'invalid',/
-            'rate' => 'invlaid price'
+            'rate' => 'invalid price'
         ]);
 
 
@@ -130,6 +137,7 @@ class ItemController extends Controller
         $item->quantity = $request->quantity;
         $item->rate = $request->rate;
         $item->tax = $request->tax;
+        $item->unit = $request->unit;
         $item->update();
 
         return response()->json([
