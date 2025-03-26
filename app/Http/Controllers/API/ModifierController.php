@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Modifier;
 use App\Models\ModifierGroup;
+use App\Models\ModifierModifierGroup;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -12,14 +13,31 @@ use Illuminate\Validation\Rule;
 
     class ModifierController extends Controller
 {
+
+    public function getmapper(){
+        $mappingData = ModifierModifierGroup::query()
+        ->orderBy('modifier_id')->get();
+        return response()->json([
+            'code' => '200',
+            'status' => 'true',
+            'data' => $mappingData,
+            'message'=>'modifiers fetched successfully'
+        ], 200);
+    }
+
+
+
+
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $modifiers = Modifier::with(['ModifierGroup'=> function($query){
-            $query->select ('id','name');
+        $modifiers = Modifier::with(['ModifierGroups'=> function($query){
+            $query->select ('modifier_groups.name');
         }])->get();
+        // $modifiers = Modifier::with(['ModifierGroups'])->get();
         return response()->json([
             'code' => '200',
             'status' => 'true',
@@ -33,6 +51,7 @@ use Illuminate\Validation\Rule;
         return $modifier_group;
     }
 
+
     /**
      * Store a newly created resource in storage.
      */
@@ -42,7 +61,7 @@ use Illuminate\Validation\Rule;
             'name' => ['required','string','max:50',Rule::unique('modifiers', 'name')->withoutTrashed()],
             // 'name' => 'required|string|max:50|unique:App\Models\Modifier,name',
             'description' => 'required|string|max:180',
-            'modifier_group_id' => 'required|min_digits:2|max_digits:3|exists:modifier_groups,id',
+            // 'modifier_group_id' => 'required|min_digits:1|max_digits:3|exists:modifier_groups,id',
             'rate' => 'required|gt:0|lte:500',
             'quantity' => 'required|gt:0|lte:20',
             'unit' => 'required|in:grams,pieces'
@@ -50,7 +69,6 @@ use Illuminate\Validation\Rule;
         ], [
             'name.unique' => 'please add unique name',
             'name' => 'invalid name',
-            'rate' => 'invlaid price'
         ]);
 
         if ($validator->fails()) {
@@ -60,17 +78,30 @@ use Illuminate\Validation\Rule;
         $newModifier = new Modifier();
         $newModifier->name = $request->name;
         $newModifier->description = $request->description;
-        $newModifier->modifier_group_id = $request->modifier_group_id;
         $newModifier->quantity = $request->quantity;
         $newModifier->rate = $request->rate;
         $newModifier->unit = $request->unit;
         $newModifier->save();
+        $newModifier->ModifierGroups()->sync($request->modifier_group_id);
 
         return response()->json([
             'code' => '201',
             'status' => 'true',
             'message' => 'modifier added successfully'
         ],  201);
+    }
+
+    public function getModifierByModifierGroupId(Request $request){
+        $validator = Validator::make($request->all(), [
+            'id'=>'required'
+        ]);
+        if($validator->fails()){
+            return response()->json(['code' => 400, 'success' => 'false', 'message' => $validator->messages(),], 200);
+        }
+
+        $modifiers = ModifierGroup::findOrFail($request->id)->modifiers();
+
+        return $modifiers;
     }
 
     /**
@@ -114,7 +145,7 @@ use Illuminate\Validation\Rule;
 
             // 'name' => 'required|string|max:50|unique:App\Models\Modifier,name,'.$request->id.',id',
             'description' => 'required|string|max:180',
-            'modifier_group_id' => 'required|min_digits:2|max_digits:3|exists:modifier_groups,id',
+            'modifier_group_id' => 'required|min_digits:1|max_digits:3|exists:modifier_groups,id',
             'rate' => 'required|gt:0|lte:500',
             'quantity' => 'required|gt:0|lte:20',
             'unit' => 'required|in:grams,pieces',

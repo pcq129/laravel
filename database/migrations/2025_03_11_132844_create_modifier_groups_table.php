@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('modifier_groups', function (Blueprint $table) {
             // $table->id();
-            $table->integer('id')->unique()->autoIncrement();
+            $table->unsignedBigInteger('id')->unique()->autoIncrement();
             $table->string('name', 50);
             $table->string('description', 150);
             $table->softDeletes();

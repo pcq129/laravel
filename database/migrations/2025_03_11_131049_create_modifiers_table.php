@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('modifiers', function (Blueprint $table) {
             // $table->id();
-            $table->increments('id')->unique();
-            $table->integer('modifier_group_id');
+            $table->unsignedBigInteger('id')->autoIncrement()->unique();
             $table->string('name');
             $table->integer('rate');
             $table->enum('unit', ['grams','pieces']);

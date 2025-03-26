@@ -39,7 +39,7 @@ class ItemController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => ['required','string','max:50',Rule::unique('item_categories', 'name')->withoutTrashed()],
             'description' => 'required|string|max:180',
-            'category_id' => 'required|min_digits:2|max_digits:3|exists:item_categories,id',
+            'category_id' => 'required|min_digits:1|max_digits:3|exists:item_categories,id',
             'rate' => 'required|numeric',
             'quantity' => 'required|numeric',
             'tax' => 'required|numeric',
@@ -115,7 +115,7 @@ class ItemController extends Controller
             'name' => ['required','string','max:50',Rule::unique('item_categories', 'name')->withoutTrashed()->ignore($request->id)],
             // 'name' => 'required|string|max:50|unique:App\Models\Item,name,'.$request->id.',id',
             'description' => 'required|string|max:180',
-            'category_id' => 'required|min_digits:2|max_digits:3|exists:item_categories,id',
+            'category_id' => 'required|min_digits:1|max_digits:3|exists:item_categories,id',
             'rate' => 'required|numeric',
             'quantity' => 'required|numeric',
             'tax' => 'required|numeric',

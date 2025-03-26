@@ -28,6 +28,7 @@ Route::post('/login', [AuthController::class, 'login'], true)->name('login');
 Route::middleware(['auth:api'])->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::get('/categorylist', [ItemCategoryController::class, 'getList']);
+    Route::get('/modifier-mapper', [ModifierController::class, 'getMapper']);
     Route::get('/modifier-group-list', [ModifierController::class, 'getList']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
