@@ -15,12 +15,12 @@ class ModifierGroupController extends Controller
      */
     public function index()
     {
-        $modifierGroup = ModifierGroup::all();
+        $modifierGroup = ModifierGroup::with('Modifiers')->get();
         return response()->json([
             "code" => "201",
             "status" => "true",
             "data" => $modifierGroup,
-            "message" => "modifier group fetched successfully"
+            "message" => "Modifier-Group fetched successfully"
         ]);
     }
 
@@ -32,7 +32,7 @@ class ModifierGroupController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => ['required','string','max:50',Rule::unique('modifier_groups', 'name')->withoutTrashed()],
-            'name' => 'required|string|max:50|unique:App\Models\ModifierGroup,name',
+            // 'name' => 'required|string|max:50|unique:App\Models\ModifierGroup,name',
             'description' => 'required|string|max:180',
         ]);
 
@@ -44,6 +44,7 @@ class ModifierGroupController extends Controller
         $modifierGroup->name = $request->name;
         $modifierGroup->description = $request->description;
         $modifierGroup->save();
+        $modifierGroup->modifiers()->sync($request->modifiers);
 
         return response()->json([
             'code' => '201',
@@ -55,29 +56,29 @@ class ModifierGroupController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request)
+    public function show($id)
     {
 
-        $validator = Validator::make($request->all(), [
-            'id'=>'required'
-        ]);
-        if($validator->fails()){
-            return response()->json(['code' => 400, 'success' => 'false', 'message' => $validator->messages(),], 200);
-        }
+        // $validator = Validator::make($request->all(), [
+        //     'id'=>'required'
+        // ]);
+        // if($validator->fails()){
+        //     return response()->json(['code' => 400, 'success' => 'false', 'message' => $validator->messages(),], 200);
+        // }
 
-        $modifierGroup = ModifierGroup::find($request->id);
+        $modifierGroup = ModifierGroup::find($id);
         if ($modifierGroup) {
             return response()->json([
                 'code' => '200',
                 'status' => 'true',
                 'data' => $modifierGroup,
-                'message' => 'data fetched successfully'
+                'message' => 'Modifier-Group deleted successfully'
             ], 200);
         }
         return response()->json([
             'code' => '404',
             'status' => 'true',
-            'message' => 'not found',
+            'message' => 'Modifier-Group not found',
         ], 200);
     }
 
@@ -107,17 +108,19 @@ class ModifierGroupController extends Controller
             $modifierGroup->name = $request->name;
             $modifierGroup->description = $request->description;
             $modifierGroup->update();
+        $modifierGroup->modifiers()->sync($request->modifiers);
+
 
             return response()->json([
                 'code' => '201',
                 'status' => 'true',
-                'message' => 'category updated successfully'
+                'message' => 'Modifier-Group updated successfully'
             ],  201);
         }
         return response()->json([
             'code' => '404',
             'status' => 'true',
-            'message' => 'not found'
+            'message' => 'Modifier-Group not found'
         ], 200);
     }
 
@@ -133,13 +136,13 @@ class ModifierGroupController extends Controller
             return response()->json([
                 'code' => '204',
                 'status' => 'true',
-                'message' => 'modifier-group deleted successfully'
+                'message' => 'Modifier-Group deleted successfully'
             ],  200);
         }
         return response()->json([
             'code' => '404',
             'status' => 'false',
-            'message' => 'modifier-group not found'
+            'message' => 'Modifier-Group not found'
         ],  200);
     }
 }

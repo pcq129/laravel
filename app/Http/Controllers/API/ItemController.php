@@ -25,7 +25,7 @@ class ItemController extends Controller
             'code' => '200',
             'status' => 'true',
             'data' => $items,
-            'message'=> 'items fetched successfully'
+            'message'=> 'Items fetched successfully'
         ], 200);
     }
 
@@ -46,9 +46,9 @@ class ItemController extends Controller
             // 'unit'=>  [Rule::enum(ServerStatus::class)->only([ServerStatus::gms, ServerStatus::pcs])],
             'unit'=> 'required'
         ], [
-            'name.unique' => 'please add unique name',
-            'name' => 'invalid name',
-            'rate' => 'invvlid price'
+            'name.unique' => 'Please add unique name',
+            'name' => 'Invalid name',
+            'rate' => 'Invalid price'
         ]);
 
         if ($validator->fails()) {
@@ -70,7 +70,7 @@ class ItemController extends Controller
         return response()->json([
             'code' => '201',
             'status' => 'true',
-            'message' => 'item added successfully'
+            'message' => 'Item added successfully'
         ],  201);
     }
 
@@ -94,13 +94,14 @@ class ItemController extends Controller
             return response()->json([
                 'code' => '200',
                 'status' => 'true',
-                'message' => $item,
+                'data' => $item,
+                'message'=>'Item fetched successfully'
             ], 200);
         }
         return response()->json([
             'code' => '404',
             'status' => 'false',
-            'message' => 'item not found',
+            'message' => 'Item not found',
         ], 404);
     }
 
@@ -122,9 +123,9 @@ class ItemController extends Controller
             // 'unit'=> [Rule::enum(ServerStatus::class)->only([ServerStatus::gms, ServerStatus::pcs])],
             'unit' => 'required'
         ], [
-            'name->unique' => 'uniq name',
+            'name->unique' => 'Please provide a unique name',
             // 'name'=> 'invalid',/
-            'rate' => 'invalid price'
+            'rate' => 'Invalid price'
         ]);
 
 
@@ -143,7 +144,7 @@ class ItemController extends Controller
         return response()->json([
             'code' => '201',
             'status' => 'true',
-            'message' => 'item updated successfully'
+            'message' => 'Item updated successfully'
         ],  201);
     }
 
@@ -158,14 +159,14 @@ class ItemController extends Controller
             return response()->json([
                 'code' => '204',
                 'status' => 'true',
-                'message' => 'item deleted successfully'
+                'message' => 'Item deleted successfully'
             ],  200);
         }
 
         return response()->json([
             'code' => '404',
             'status' => 'false',
-            'message' => 'item not found'
+            'message' => 'Item not found'
         ],  200);
     }
 }

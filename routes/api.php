@@ -1,15 +1,18 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\TestController;
+// use App\Http\Controllers\API\TestController;
 use App\Http\Controllers\API\userController;
 use App\Http\Controllers\API\ItemCategoryController;
 use App\Http\Controllers\API\ItemController;
 use App\Http\Controllers\API\ModifierController;
 use App\Http\Controllers\API\ModifierGroupController;
-use App\Http\Middleware\Authenticate;
-use Illuminate\Http\Request;
+use App\Http\Controllers\API\SectionController;
+// use App\Http\Middleware\Authenticate;
+// use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\TableController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -28,13 +31,15 @@ Route::post('/login', [AuthController::class, 'login'], true)->name('login');
 Route::middleware(['auth:api'])->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::get('/categorylist', [ItemCategoryController::class, 'getList']);
-    Route::get('/modifier-mapper', [ModifierController::class, 'getMapper']);
+    // Route::get('/modifier-mapper', [ModifierController::class, 'getMapper']);
     Route::get('/modifier-group-list', [ModifierController::class, 'getList']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
-    Route::resource('/items', ItemController::class);
-    Route::resource('/users', UserController::class);
+    Route::resource('/item', ItemController::class);
+    Route::resource('/user', UserController::class);
     Route::resource('/category', ItemCategoryController::class);
     Route::resource('/modifier-group', ModifierGroupController::class);
     Route::resource('/modifier', ModifierController::class);
+    Route::resource('/section',SectionController::class);
+    Route::resource('/table',TableController::class);
 });

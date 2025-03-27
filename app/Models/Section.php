@@ -5,17 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Modifier;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-
-class ModifierGroup extends Model
+class Section extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory,SoftDeletes;
 
-    public function Modifiers(): BelongsToMany
+    /**
+     * Get all of the tables for the Section
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function tables(): HasMany
     {
-        return $this->belongsToMany(Modifier::class, 'modifier_modifier_group', 'modifier_group_id', 'modifier_id');
+        return $this->hasMany(Table::class, 'section_id', 'id');
     }
 
     protected $hidden = [

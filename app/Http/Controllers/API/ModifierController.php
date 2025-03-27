@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Modifier;
 use App\Models\ModifierGroup;
 use App\Models\ModifierModifierGroup;
+use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -13,20 +14,18 @@ use Illuminate\Validation\Rule;
 
     class ModifierController extends Controller
 {
+    //not needed
 
-    public function getmapper(){
-        $mappingData = ModifierModifierGroup::query()
-        ->orderBy('modifier_id')->get();
-        return response()->json([
-            'code' => '200',
-            'status' => 'true',
-            'data' => $mappingData,
-            'message'=>'modifiers fetched successfully'
-        ], 200);
-    }
-
-
-
+    // public function getmapper(){
+    //     $mappingData = ModifierModifierGroup::query()
+    //     ->orderBy('modifier_id')->get();
+    //     return response()->json([
+    //         'code' => '200',
+    //         'status' => 'true',
+    //         'data' => $mappingData,
+    //         'message'=>'modifiers fetched successfully'
+    //     ], 200);
+    // }
 
 
     /**
@@ -37,12 +36,13 @@ use Illuminate\Validation\Rule;
         $modifiers = Modifier::with(['ModifierGroups'=> function($query){
             $query->select ('modifier_groups.name');
         }])->get();
+
         // $modifiers = Modifier::with(['ModifierGroups'])->get();
         return response()->json([
             'code' => '200',
             'status' => 'true',
             'data' => $modifiers,
-            'message'=>'modifiers fetched successfully'
+            'message'=>'Modifiers fetched successfully'
         ], 200);
     }
 
@@ -62,13 +62,13 @@ use Illuminate\Validation\Rule;
             // 'name' => 'required|string|max:50|unique:App\Models\Modifier,name',
             'description' => 'required|string|max:180',
             // 'modifier_group_id' => 'required|min_digits:1|max_digits:3|exists:modifier_groups,id',
-            'rate' => 'required|gt:0|lte:500',
-            'quantity' => 'required|gt:0|lte:20',
+            'rate' => 'required|gt:0',
+            'quantity' => 'required|gt:0',
             'unit' => 'required|in:grams,pieces'
 
         ], [
-            'name.unique' => 'please add unique name',
-            'name' => 'invalid name',
+            'name.unique' => 'Please add unique name',
+            'name' => 'Invalid name',
         ]);
 
         if ($validator->fails()) {
@@ -81,13 +81,14 @@ use Illuminate\Validation\Rule;
         $newModifier->quantity = $request->quantity;
         $newModifier->rate = $request->rate;
         $newModifier->unit = $request->unit;
+        // dd($request->modifier_group_id);
         $newModifier->save();
         $newModifier->ModifierGroups()->sync($request->modifier_group_id);
 
         return response()->json([
             'code' => '201',
             'status' => 'true',
-            'message' => 'modifier added successfully'
+            'message' => 'Modifier added successfully'
         ],  201);
     }
 
@@ -107,22 +108,23 @@ use Illuminate\Validation\Rule;
     /**
      * Display the specified resource.
      */
-    public function show(Request $request)
+    public function show($id)
     {
 
-        $validator = Validator::make($request->all(), [
-            'id'=>'required'
-        ]);
-        if($validator->fails()){
-            return response()->json(['code' => 400, 'success' => 'false', 'message' => $validator->messages(),], 200);
-        }
+        // $validator = Validator::make($request->all(), [
+        //     'id'=>'required'
+        // ]);
+        // if($validator->fails()){
+        //     return response()->json(['code' => 400, 'success' => 'false', 'message' => $validator->messages(),], 200);
+        // }
 
-        $modifier = Modifier::find($request->id);
+        $modifier = Modifier::find($id);
         if($modifier){
             return response()->json([
                 'code' => '200',
                 'status' => 'true',
-                'message' => $modifier,
+                'data' => $modifier,
+                'message'=> 'Modifier fetched successfully'
             ], 200);
         }
         return response()->json([
@@ -142,12 +144,11 @@ use Illuminate\Validation\Rule;
 
         $validator = Validator::make($request->all(), [
             'name' => ['required','string','max:50',Rule::unique('modifiers', 'name')->withoutTrashed()->ignore($request->id)],
-
             // 'name' => 'required|string|max:50|unique:App\Models\Modifier,name,'.$request->id.',id',
             'description' => 'required|string|max:180',
-            'modifier_group_id' => 'required|min_digits:1|max_digits:3|exists:modifier_groups,id',
-            'rate' => 'required|gt:0|lte:500',
-            'quantity' => 'required|gt:0|lte:20',
+            // 'modifier_group_id' => 'required|min_digits:1|max_digits:3|exists:modifier_groups,id',
+            'rate' => 'required|gt:0',
+            'quantity' => 'required|gt:0',
             'unit' => 'required|in:grams,pieces',
             'id'=> 'required'
         ]);
@@ -158,16 +159,18 @@ use Illuminate\Validation\Rule;
         }
         $modifier->name = $request->name;
         $modifier->description = $request->description;
-        $modifier->modifier_group_id = $request->modifier_group_id;
+        // $modifier->modifier_group_id = $request->modifier_group_id;
         $modifier->quantity = $request->quantity;
         $modifier->rate = $request->rate;
         $modifier->unit = $request->unit;
         $modifier->update();
+        $modifier->ModifierGroups()->sync($request->modifier_group_id);
+
 
         return response()->json([
             'code' => '201',
             'status' => 'true',
-            'message' => 'modifier updated successfully'
+            'message' => 'Modifier updated successfully'
         ],  201);
     }
 
@@ -192,14 +195,14 @@ use Illuminate\Validation\Rule;
             return response()->json([
                 'code' => '204',
                 'status' => 'true',
-                'message' => 'modifier deleted successfully'
+                'message' => 'Modifier deleted successfully'
             ],  200);
         }
 
         return response()->json([
             'code' => '404',
             'status' => 'false',
-            'message' => 'modifier not found'
+            'message' => 'Modifier not found'
         ],  200);
     }
 }

@@ -20,7 +20,7 @@ class ItemCategoryController extends Controller
             'code' => '200',
             'status' => 'true',
             'data'=> $categories,
-            'message' => 'categories fetched successfully',
+            'message' => 'Categories fetched successfully',
         ], 200);
     }
 
@@ -60,7 +60,7 @@ class ItemCategoryController extends Controller
         return response()->json([
             'code' => '201',
             'status' => 'true',
-            'message' => 'category added successfully'
+            'message' => 'Category added successfully'
         ],  201);
     }
 
@@ -85,14 +85,14 @@ class ItemCategoryController extends Controller
                 'code' => '200',
                 'status' => 'true',
                 'data' => $itemCategory,
-                'message' => 'data fetched successfully'
+                'message' => 'Category fetched successfully'
             ], 200);
         }
         return response()->json([
             'code' => '404',
             'status' => 'true',
-            'message' => 'not found'
-        ], 200);
+            'message' => 'Category not found'
+        ], 204);
     }
 
     // /**
@@ -129,7 +129,7 @@ class ItemCategoryController extends Controller
             return response()->json([
                 'code' => '201',
                 'status' => 'true',
-                'message' => 'category updated successfully'
+                'message' => 'Category updated successfully'
             ],  201);
         }
         return response()->json([
@@ -151,13 +151,13 @@ class ItemCategoryController extends Controller
             return response()->json([
                 'code' => '204',
                 'status' => 'true',
-                'message' => 'category deleted successfully'
+                'message' => 'Category deleted successfully'
             ],  200);
         }
         return response()->json([
             'code' => '404',
             'status' => 'false',
-            'message' => 'category not found'
+            'message' => 'Category not found'
         ],  200);
     }
 }

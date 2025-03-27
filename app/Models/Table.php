@@ -4,18 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Modifier;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-
-class ModifierGroup extends Model
+class Table extends Model
 {
     use HasFactory, SoftDeletes;
 
-    public function Modifiers(): BelongsToMany
-    {
-        return $this->belongsToMany(Modifier::class, 'modifier_modifier_group', 'modifier_group_id', 'modifier_id');
+
+    public function section():BelongsTo{
+        return $this->belongsTo(Section::class, 'section_id', 'id');
     }
 
     protected $hidden = [
@@ -26,6 +24,8 @@ class ModifierGroup extends Model
 
     protected $fillable = [
         'name',
-        'description',
+        'status',
+        'capacity',
+        'section_id'
     ];
 }
