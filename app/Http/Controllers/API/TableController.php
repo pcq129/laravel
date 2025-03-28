@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Table;
+use App\Models\Section;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -18,10 +19,27 @@ class TableController extends Controller
     {
         $table = Table::all();
         return response()->json([
-            'code'=>'200',
-            'status'=>'false',
-            'data'=>$table,
-            'messge'=>'Table data fetched successfully'
+            'code' => '200',
+            'status' => 'true',
+            'data' => $table,
+            'messge' => 'Table data fetched successfully'
+        ]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function indexBySection($id)
+    {
+        $section = Section::with('tables')->find($id);
+        // dd($section);
+        // $table = $section->tables();
+        $table = Table::all();
+        return response()->json([
+            'code' => '200',
+            'status' => 'true',
+            'data' => $section,
+            'messge' => 'Table data fetched successfully'
         ]);
     }
 
@@ -30,30 +48,32 @@ class TableController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->name);
+        // dd($request->name);
         $validator = Validator::make($request->all(), [
-            'name'=> [Rule::Unique('tables', 'name')->ignore($request->id),'required'],
-            'status'=> ['required',Rule::in(['Available','Occupied'])],
-            'capacity'=> ['required', 'numeric', 'between:1,25'],
-            'section_id'=> ['numeric','lt:99'],
-        ]);
+            'name' => [Rule::Unique('tables', 'name')->withoutTrashed(), 'required'],
+            'status' => ['required', Rule::in(['Available', 'Occupied'])],
+            'capacity' => ['required', 'numeric', 'between:1,25'],
+            'section_id' => ['numeric', 'lt:99'],
+        ],$message = ['name.unique' => 'Table already exists']);
 
         if ($validator->fails()) {
-            return response()->json(['code' => 400, 'success' => 'false', 'message' => $validator->messages(),], 200);
+            return response()->json(['code' => 400, 'status' => 'false', 'message' => $validator->messages(),], 200);
         }
 
         $table = new Table();
         $table->name = $request->name;
         $table->status = $request->status;
         $table->capacity = $request->capacity;
-        $section = Section::find($request->section_id);
-        $table->section()->associate($section);
+        if ($request->section_id) {
+            $section = Section::find($request->section_id);
+            $table->section()->associate($section);
+        }
         $table->save();
 
         return response()->json([
-            'code'=>'200',
-            'status'=>'success',
-            'message'=>"Table added successfully"
+            'code' => '200',
+            'status' => 'true',
+            'message' => "Table added successfully"
         ], 200);
     }
 
@@ -73,7 +93,7 @@ class TableController extends Controller
         }
         return response()->json([
             'code' => '404',
-            'status' => 'true',
+            'status' => 'false',
             'message' => 'Table not found',
         ], 200);
     }
@@ -86,15 +106,15 @@ class TableController extends Controller
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id'=> ['required'],
-            'name'=> [Rule::Unique('tables', 'name')->ignore($request->id), 'required'],
-            'status'=> ['required',Rule::in(['Available','Occupied'])],
-            'capacity'=> ['required', 'numeric', 'between:1,25'],
-            'section_id'=> ['numeric','lt:99'],
-        ]);
+            'id' => ['required'],
+            'name' => [Rule::Unique('tables', 'name')->ignore($request->id)->withoutTrashed(), 'required'],
+            'status' => ['required', Rule::in(['Available', 'Occupied'])],
+            'capacity' => ['required', 'numeric', 'between:1,25'],
+            'section_id' => ['numeric', 'lt:99'],
+        ],$message = ['name.unique' => 'Table already exists']);
 
         if ($validator->fails()) {
-            return response()->json(['code' => 400, 'success' => 'false', 'message' => $validator->messages(),], 200);
+            return response()->json(['code' => 400, 'status' => 'false', 'message' => $validator->messages(),], 200);
         }
 
         $table = Table::findOrFail($request->id);
@@ -107,9 +127,9 @@ class TableController extends Controller
         $table->save();
 
         return response()->json([
-            'code'=>'200',
-            'status'=>'success',
-            'message'=>"Table updated successfully"
+            'code' => '200',
+            'status' => 'true',
+            'message' => "Table updated successfully"
         ], 200);
     }
 
@@ -129,8 +149,11 @@ class TableController extends Controller
         }
         return response()->json([
             'code' => '404',
-            'status' => 'true',
+            'status' => 'false',
             'message' => 'Table not found',
         ], 200);
     }
+
+
+
 }

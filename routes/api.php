@@ -42,4 +42,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('/modifier', ModifierController::class);
     Route::resource('/section',SectionController::class);
     Route::resource('/table',TableController::class);
+    Route::get('/sectionstable/{id}',[TableController::class, 'indexBySection']);
 });

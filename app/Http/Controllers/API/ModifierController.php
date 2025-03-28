@@ -72,7 +72,7 @@ use Illuminate\Validation\Rule;
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['code' => 400, 'success' => 'false', 'message' => $validator->messages(),], 200);
+            return response()->json(['code' => 400, 'status' => 'false', 'message' => $validator->messages(),], 200);
         }
 
         $newModifier = new Modifier();
@@ -97,7 +97,7 @@ use Illuminate\Validation\Rule;
             'id'=>'required'
         ]);
         if($validator->fails()){
-            return response()->json(['code' => 400, 'success' => 'false', 'message' => $validator->messages(),], 200);
+            return response()->json(['code' => 400, 'status' => 'false', 'message' => $validator->messages(),], 200);
         }
 
         $modifiers = ModifierGroup::findOrFail($request->id)->modifiers();
@@ -155,7 +155,7 @@ use Illuminate\Validation\Rule;
 
 
         if ($validator->fails()) {
-            return response()->json(['code' => 400, 'success' => 'false', 'message' => $validator->messages(),], 200);
+            return response()->json(['code' => 400, 'status' => 'false', 'message' => $validator->messages(),], 200);
         }
         $modifier->name = $request->name;
         $modifier->description = $request->description;
@@ -185,7 +185,7 @@ use Illuminate\Validation\Rule;
         //     'id'=>'required'
         // ]);
         // if($validator->fails()){
-        //     return response()->json(['code' => 400, 'success' => 'false', 'message' => $validator->messages(),], 200);
+        //     return response()->json(['code' => 400, 'status' => 'false', 'message' => $validator->messages(),], 200);
         // }
 
 

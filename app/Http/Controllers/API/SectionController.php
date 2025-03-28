@@ -31,12 +31,15 @@ class SectionController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name'=> [Rule::Unique('tables', 'name')->ignore($request->id), 'required'],
-            'description' => ['required','min:9','max:180'],
-        ]);
+            'name'=> [Rule::Unique('sections', 'name')->withoutTrashed()],
+        ],
+    $message =
+[
+    'name.unique' => 'Section already exists'
+]);
 
         if ($validator->fails()) {
-            return response()->json(['code' => 400, 'success' => 'false', 'message' => $validator->messages(),], 200);
+            return response()->json(['code' => 400, 'status' => 'false', 'message' => $validator->messages(),], 200);
         }
 
         $newSection = new Section();
@@ -47,7 +50,7 @@ class SectionController extends Controller
         return response()->json([
             'code'=>'200',
             'status'=>'true',
-            'messge'=>'New Section added successfully'
+            'messge'=>'New Section added statusfully'
         ],201);
     }
 
@@ -80,12 +83,11 @@ class SectionController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id'=> ['required'],
-            'name'=> [Rule::Unique('tables', 'name')->ignore($request->id), 'required'],
-            'description' => ['required','min:9','max:180'],
-        ]);
+            'name'=> [Rule::Unique('sections', 'name')->ignore($request->id)->withoutTrashed()],
+        ],$message = ['name.unique' => 'Section already exists']);
 
         if ($validator->fails()) {
-            return response()->json(['code' => 400, 'success' => 'false', 'message' => $validator->messages(),], 200);
+            return response()->json(['code' => 400, 'status' => 'false', 'message' => $validator->messages(),], 200);
         }
 
         $newSection = Section::find($request->id);
@@ -96,7 +98,7 @@ class SectionController extends Controller
         return response()->json([
             'code'=>'200',
             'status'=>'true',
-            'messge'=>'New Section added successfully'
+            'messge'=>'Section Updated successfully'
         ],201);
     }
 
@@ -116,7 +118,7 @@ class SectionController extends Controller
         }
         return response()->json([
             'code' => '404',
-            'status' => 'true',
+            'status' => 'false',
             'message' => 'Section not found',
         ], 200);
     }

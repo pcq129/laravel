@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('sections', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->autoIncrement();
             $table->string('name', 20);
-            $table->string('description', 255);
+            $table->string('description', 255)->nullable(true);
             $table->softDeletes();
             $table->timestamps();
         });
