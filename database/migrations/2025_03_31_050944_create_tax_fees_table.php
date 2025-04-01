@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('item_categories', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name', 50)->unique();
-            $table->string('description', 150)->nullable(true);
+        Schema::create('tax_fees', function (Blueprint $table) {
+            $table->unsignedBigInteger('id')->autoIncrement();
+            $table->string('name', 50);
+            $table->enum('type', ['percentage', 'flat_amount']);
+            $table->integer('amount');
+            $table->boolean('enabled')->default(0);
+            $table->boolean('default')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('item_categories');
+        Schema::dropIfExists('tax_fees');
     }
 };

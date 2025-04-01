@@ -12,7 +12,7 @@ use App\Http\Controllers\API\SectionController;
 // use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\TableController;
-
+use App\Http\Controllers\API\TaxFeeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,5 +42,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('/modifier', ModifierController::class);
     Route::resource('/section',SectionController::class);
     Route::resource('/table',TableController::class);
+    Route::resource('/tax-fees',TaxFeeController::class);
     Route::get('/sectionstable/{id}',[TableController::class, 'indexBySection']);
+    Route::put('/tax-fees-toggle/{id}',[TaxFeeController::class, 'toggle']);
 });

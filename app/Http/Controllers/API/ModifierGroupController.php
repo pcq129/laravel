@@ -33,7 +33,7 @@ class ModifierGroupController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => ['required','string','max:50',Rule::unique('modifier_groups', 'name')->withoutTrashed()],
             // 'name' => 'required|string|max:50|unique:App\Models\ModifierGroup,name',
-            'description' => 'required|string|max:180',
+            'description' => 'nullable|string|max:180',
         ]);
 
         if ($validator->fails()) {
@@ -96,7 +96,7 @@ class ModifierGroupController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => ['required','string','max:50',Rule::unique('modifier_groups', 'name')->withoutTrashed()->ignore($request->id)],
             // 'name' => 'required|string|max:50|unique:App\Models\ModifierGroup,name,' . $request->id . ',id',
-            'description' => 'required|string|max:180',
+            'description' => 'nullable|string|max:180',
         ]);
 
         if ($validator->fails()) {

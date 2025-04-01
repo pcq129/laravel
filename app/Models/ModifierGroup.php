@@ -18,6 +18,12 @@ class ModifierGroup extends Model
         return $this->belongsToMany(Modifier::class, 'modifier_modifier_group', 'modifier_group_id', 'modifier_id');
     }
 
+    public function Items(): BelongsToMany
+    {
+        return $this->belongsToMany(Item::class, 'item_modifier_groups_mapping', 'modifier_group_id', 'item_id');
+    }
+
+
     protected $hidden = [
         'deleted_at',
         'updated_at',

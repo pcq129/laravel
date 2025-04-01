@@ -39,7 +39,7 @@ class ItemCategoryController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => ['required','string','max:50',Rule::unique('item_categories', 'name')->withoutTrashed()],
-            'description' => 'required|string|max:180',
+            'description' => 'string|nullable|max:180',
         ],[
             'name.unique' => 'category with the same name already exists',
             'name' => 'invalid name',
@@ -109,7 +109,7 @@ class ItemCategoryController extends Controller
             // 'name' =>
             'name' => ['required','string','max:50',Rule::unique('item_categories', 'name')->withoutTrashed()->ignore($request->id)],
             // 'name' => Rule::unique('ItemCategory', 'name')->ignore($ItemCategory->name)->whereNull('deleted_at')->orWhereNotNull('deleted-at');
-            'description' => 'required|string|max:180',
+            'description' => 'string|nullable|max:180',
         ],[
             'name.unique' => 'category with the same name already exists',
             'name' => 'invalid name',
@@ -146,6 +146,7 @@ class ItemCategoryController extends Controller
     {
         $itemCategory = ItemCategory::find($id);
         if ($itemCategory) {
+            $itemCategory->items()->delete();
             $itemCategory->delete();
 
             return response()->json([

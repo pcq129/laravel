@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Item;
@@ -18,9 +19,9 @@ class ItemCategory extends Model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
 
-    public function item():HasMany
+    public function Items():HasMany
     {
-        return $this->hasMany(Item::class, 'category_id', 'id');
+        return $this->hasMany(Item::class, 'category_id', 'item_id');
     }
 
     protected $hidden = [

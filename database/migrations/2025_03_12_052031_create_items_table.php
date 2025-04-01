@@ -15,7 +15,7 @@ return new class extends Migration
             $table->integer('id')->autoIncrement();
             // $table->foreign('id')->references('item_category_id')->on('item_categories');
             $table->string('name', 40);
-            $table->string('description', 200);
+            $table->string('description', 200)->nullable(true);
             $table->integer('category_id');
             $table->integer('quantity');
             $table->integer('rate');

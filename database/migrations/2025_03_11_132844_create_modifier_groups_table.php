@@ -15,7 +15,7 @@ return new class extends Migration
             // $table->id();
             $table->unsignedBigInteger('id')->unique()->autoIncrement();
             $table->string('name', 50);
-            $table->string('description', 150);
+            $table->string('description', 150)->nullable(true);
             $table->softDeletes();
             $table->timestamps();
         });

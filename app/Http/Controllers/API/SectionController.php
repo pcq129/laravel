@@ -109,7 +109,16 @@ class SectionController extends Controller
     {
         $section = Section::find($id);
         if ($section) {
-            $section->delete();
+            // $section->tables()->where('status','Available')->delete();
+            $contains =  $section->with('tables')->where('id', '=', $id)->get();
+            // return $contains;
+
+            foreach ($contains->tables as $table) {
+                if($table->status === "Occupied"){
+                    dd($table);
+                }
+            }
+            // $section->delete();
             return response()->json([
                 'code' => '200',
                 'status' => 'true',

@@ -23,7 +23,7 @@ class TableController extends Controller
             'status' => 'true',
             'data' => $table,
             'messge' => 'Table data fetched successfully'
-        ]);
+        ], 200);
     }
 
     /**
@@ -40,7 +40,7 @@ class TableController extends Controller
             'status' => 'true',
             'data' => $section,
             'messge' => 'Table data fetched successfully'
-        ]);
+        ], 200);
     }
 
     /**
@@ -139,12 +139,22 @@ class TableController extends Controller
     public function destroy($id)
     {
         $table = Table::find($id);
-        if ($table) {
+
+        // dd($table->status);
+
+        if ($table && $table->status == "Available") {
             $table->delete();
             return response()->json([
                 'code' => '200',
                 'status' => 'true',
                 'message' => 'Table deleted successfully'
+            ], 200);
+        }
+        else if($table && $table->status == "Occupied"){
+            return response()->json([
+                'code' => '200',
+                'status' => 'false',
+                'message' => 'Table cannot be deleted when occupied',
             ], 200);
         }
         return response()->json([
