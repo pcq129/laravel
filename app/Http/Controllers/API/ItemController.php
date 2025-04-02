@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use App\Models\ItemCategory;
 use App\Enums\ServerStatus;
+use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class ItemController extends Controller
 {
@@ -45,7 +47,7 @@ class ItemController extends Controller
             'name' => ['required','string','max:50',Rule::unique('items', 'name')->withoutTrashed()],
             'rate' => 'required|numeric',
             'unit'=> ['required',Rule::in(['pcs','gms'])],
-            'image'=> 'nullable|image|mimes:jpeg,png,jpg,gif|max:6500',
+            'image'=> 'nullable|string',
             'quantity' => 'required|numeric',
             'item_type'=> ['required', Rule::in(['veg','non-veg','vegan'])],
             'available'=> ['required','boolean'],
@@ -54,7 +56,7 @@ class ItemController extends Controller
             'category_id' => 'required|min_digits:1|max_digits:3|exists:item_categories,id',
             'description' => 'string|nullable|max:180',
             'tax_percentage' => 'numeric|min:0|max:60',
-            'modifier_groups_id'=> ['required'],
+            'modifier_groups_id'=> ['nullable'],
         ], [
             'name' => 'Invalid name',
             'rate' => 'Invalid price',
@@ -80,14 +82,12 @@ class ItemController extends Controller
         $newItem->item_type = $request->item_type;
         $newItem->available = $request->available ;
         $newItem->short_code = $request->short_code ;
-        // $newItem->image = $request->image ;
+        $newItem->image = $request->image ;
         $newItem->default_tax = $request->default_tax ;
-
-        $imageName = time().'.'.$request->image->extension();
-        $request->image->move(public_path('images'), $imageName);
-        $newItem -> image = 'images/'.$imageName;
         $newItem->save();
-        $newItem->ModifierGroups()->sync($request->modifier_groups_id);
+        if($request->modifier_groups_id){
+            $newItem->ModifierGroups()->sync($request->modifier_groups_id);
+        }
 
         return response()->json([
             'code' => '201',
@@ -133,13 +133,13 @@ class ItemController extends Controller
     public function update(Request $request)
     {
         $item = Item::find($request->id);
-        dd($request);
+        // dd($request);
         $validator = Validator::make($request->all(), [
             'id' => ['required'],
             'name' => ['required','string','max:50',Rule::unique('items', 'name')->ignore($request->id, 'id')->withoutTrashed()],
             'rate' => 'required|numeric',
             'unit'=> ['required',Rule::in(['pcs','gms'])],
-            'image'=> 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'image'=> 'nullable|string',
             'quantity' => 'required|numeric',
             'item_type'=> ['required', Rule::in(['veg','non-veg','vegan'])],
             'available'=> ['required','boolean'],
@@ -148,7 +148,7 @@ class ItemController extends Controller
             'category_id' => 'required|min_digits:1|max_digits:3|exists:item_categories,id',
             'description' => 'string|nullable|max:180',
             'tax_percentage' => 'numeric|min:0|max:60',
-            'modifier_groups_id'=> ['required'],
+            'modifier_groups_id'=> ['nullable'],
             // 'name' => ['required','string','max:50',Rule::unique('item_categories', 'name')->withoutTrashed()->ignore($request->id)],
             // // 'name' => 'required|string|max:50|unique:App\Models\Item,name,'.$request->id.',id',
             // 'description' => 'nullable|string|max:180',
@@ -168,7 +168,7 @@ class ItemController extends Controller
         if ($validator->fails()) {
             return response()->json(['code' => 400, 'status' => 'false', 'message' => $validator->messages(),], 200);
         }
-
+        // dd($request->image);
         $item = Item::find($request->id);
         $item->name = $request->name;
         $item->description = $request->description;
@@ -183,7 +183,9 @@ class ItemController extends Controller
         $item->image = $request->image ;
         $item->default_tax = $request->default_tax ;
         $item->update();
-        $item->ModifierGroups()->sync($request->modifier_groups_id);
+        if($request->modifier_groups_id){
+            $item->ModifierGroups()->sync($request->modifier_groups_id);
+        }
 
         // $item->name = $request->name;
         // $item->description = $request->description;
@@ -221,5 +223,31 @@ class ItemController extends Controller
             'status' => 'false',
             'message' => 'Item not found'
         ],  200);
+    }
+
+    public function image(Request $request){
+        if (!$request->hasFile('image')) {
+            return response()->json(['message' => 'No file uploaded'], 400);
+        }
+
+        $file = $request->file('image');
+        $path = $file->store('uploads', 'public'); // Saves in storage/app/public/uploads
+        $filename = basename($path);
+        return response()->json(['message' => 'Image uploaded successfully', 'path' => $filename], 200);
+    }
+
+    public function removeImage($image){
+        $file_path = public_path('storage\\uploads\\'.$image);
+        if(File::exists($file_path)){
+            File::delete($file_path);
+            return response()->json([
+                "message" => "Previous image deleted"
+            ]);
+        }
+        else{
+            return response()->json([
+                "message" => "file not found"
+            ]);
+        }
     }
 }

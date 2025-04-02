@@ -16,7 +16,7 @@ return new class extends Migration
            $table->enum('item_type', ['veg', 'non-veg', 'vegan'])->default('veg')->after('name');
            $table->boolean('default_tax')->default(1)->after('rate');
            $table->boolean('available')->default(1);
-           $table->integer('short_code');
+           $table->integer('short_code')->nullable(true);
            $table->string('image')->nullable(true);
         });
     }
@@ -33,7 +33,6 @@ return new class extends Migration
             $table->dropColumn('available');
             $table->dropColumn('short_code');
             $table->dropColumn('image');
-            $table->dropColumn('tax_perentage');
         });
     }
 };

@@ -45,4 +45,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('/tax-fees',TaxFeeController::class);
     Route::get('/sectionstable/{id}',[TableController::class, 'indexBySection']);
     Route::put('/tax-fees-toggle/{id}',[TaxFeeController::class, 'toggle']);
+    Route::post('/upload-image',[ItemController::class, 'image']);
+    Route::delete('/upload-image/{image}',[ItemController::class, 'removeImage']);
 });

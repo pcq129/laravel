@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('rate');
             $table->enum('unit', ['grams','pieces']);
             $table->integer('quantity');
-            $table->string('description', 150);
+            $table->string('description', 150)->nullable(true);
             $table->timestamps();
             $table->softDeletes();
         });
