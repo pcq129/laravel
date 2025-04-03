@@ -13,6 +13,7 @@ use App\Http\Controllers\API\SectionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\TableController;
 use App\Http\Controllers\API\TaxFeeController;
+use App\Http\Controllers\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,4 +48,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('/tax-fees-toggle/{id}',[TaxFeeController::class, 'toggle']);
     Route::post('/upload-image',[ItemController::class, 'image']);
     Route::delete('/upload-image/{image}',[ItemController::class, 'removeImage']);
+    Route::post('/customer', [CustomerController::class, 'assign_table']);
 });

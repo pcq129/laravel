@@ -16,7 +16,7 @@ class SectionController extends Controller
      */
     public function index()
     {
-        $section = Section::all();
+        $section = Section::with('tables')->get();
         return response()->json([
             'code'=>'200',
             'status'=>'true',

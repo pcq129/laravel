@@ -51,7 +51,7 @@ class TableController extends Controller
         // dd($request->name);
         $validator = Validator::make($request->all(), [
             'name' => [Rule::Unique('tables', 'name')->withoutTrashed(), 'required'],
-            'status' => ['required', Rule::in(['Available', 'Occupied'])],
+            'status' => ['required', Rule::in(['Available', 'Running', 'Assigned'])],
             'capacity' => ['required', 'numeric', 'between:1,25'],
             'section_id' => ['numeric', 'lt:99'],
         ],$message = ['name.unique' => 'Table already exists']);
@@ -108,7 +108,7 @@ class TableController extends Controller
         $validator = Validator::make($request->all(), [
             'id' => ['required'],
             'name' => [Rule::Unique('tables', 'name')->ignore($request->id)->withoutTrashed(), 'required'],
-            'status' => ['required', Rule::in(['Available', 'Occupied'])],
+            'status' => ['required', Rule::in(['Available', 'Running', 'Assigned'])],
             'capacity' => ['required', 'numeric', 'between:1,25'],
             'section_id' => ['numeric', 'lt:99'],
         ],$message = ['name.unique' => 'Table already exists']);
@@ -150,7 +150,7 @@ class TableController extends Controller
                 'message' => 'Table deleted successfully'
             ], 200);
         }
-        else if($table && $table->status == "Occupied"){
+        else if($table && $table->status == "Running"){
             return response()->json([
                 'code' => '200',
                 'status' => 'false',

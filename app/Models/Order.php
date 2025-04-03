@@ -25,8 +25,18 @@ class Order extends Model
         return $this->belongsToMany(Tax::class);
     }
 
-    public function user(): BelongsTo
+    // public function customer(): BelongsTo
+    // {
+    //     return $this->belongsTo(Customer::class);
+    // }
+
+    /**
+     * Get the customer that owns the Order
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function customer(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
     }
 }

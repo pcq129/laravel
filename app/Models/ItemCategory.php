@@ -16,7 +16,7 @@ class ItemCategory extends Model
     /**
      * Get all of the item for the ItemCategory
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMnay
      */
 
     public function Items():HasMany

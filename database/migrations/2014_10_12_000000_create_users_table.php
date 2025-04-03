@@ -23,9 +23,9 @@ return new class extends Migration
             $table->string('user_name', 30);
             $table->string('address', 150);
             $table->string('country', 50)->default('India');
-            $table->string('state', 17)->default('Gujarat');;
-            $table->string('city', 17)->default('Ahmedabad');;
-            $table->integer('zipcode')->default('380041');;
+            $table->string('state', 17)->default('Gujarat');
+            $table->string('city', 17)->default('Ahmedabad');
+            $table->integer('zipcode')->default('380041');
             $table->string('role', 10)->required()->default('user');
             $table->string('password', 180)->required();
             $table->timestamp('email_verified_at')->nullable();
@@ -43,5 +43,5 @@ return new class extends Migration
         Schema::dropIfExists('users');
     }
 
-   
+
 };
