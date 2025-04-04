@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\ItemCategory;
+use App\Models\Item;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\Rule;
@@ -15,7 +16,7 @@ class ItemCategoryController extends Controller
      */
     public function index()
     {
-        $categories = ItemCategory::all();
+        $categories = ItemCategory::with('Items')->get();
         return response()->json([
             'code' => '200',
             'status' => 'true',

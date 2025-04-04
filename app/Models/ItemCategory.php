@@ -21,7 +21,7 @@ class ItemCategory extends Model
 
     public function Items():HasMany
     {
-        return $this->hasMany(Item::class, 'category_id', 'item_id');
+        return $this->hasMany(Item::class, 'category_id', 'id');
     }
 
     protected $hidden = [
@@ -29,6 +29,8 @@ class ItemCategory extends Model
         'updated_at',
         'created_at',
     ];
+
+    protected $table = 'item_categories';
 
 
 }

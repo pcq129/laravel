@@ -48,5 +48,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('/tax-fees-toggle/{id}',[TaxFeeController::class, 'toggle']);
     Route::post('/upload-image',[ItemController::class, 'image']);
     Route::delete('/upload-image/{image}',[ItemController::class, 'removeImage']);
-    Route::post('/customer', [CustomerController::class, 'assign_table']);
+    Route::post('/customer/assign-table', [CustomerController::class, 'assign_table']);
 });
