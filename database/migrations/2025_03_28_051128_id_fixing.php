@@ -15,10 +15,6 @@ return new class extends Migration
             $table->unsignedBigInteger('id')->autoIncrement()->change();
         });
 
-        Schema::table('orders', function(Blueprint $table){
-            $table->unsignedBigInteger('id')->autoIncrement()->change();
-        });
-
         Schema::table('users', function(Blueprint $table){
             $table->unsignedBigInteger('id')->autoIncrement()->change();
         });
@@ -34,10 +30,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('items', function(Blueprint $table){
-            $table->integer('id')->autoIncrement()->change();
-        });
-
-        Schema::table('orders', function(Blueprint $table){
             $table->integer('id')->autoIncrement()->change();
         });
 
