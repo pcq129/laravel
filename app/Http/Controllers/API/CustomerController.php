@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Models\Table;
 
 class CustomerController extends Controller
@@ -65,52 +66,60 @@ class CustomerController extends Controller
     }
 
     public function assign_table(Request $request)
-        {
-            // {
-            //     "email": "test@test.com",
-            //     "name": "Harmit",
-            //     "mobile": "9485495837",
-            //     "people": "75",
-            //     "section": "Ground Floor",
-            //     "section_id": 1,
-                // "table_ids": [
-                //     2
-                // ]
-            // }
-        $customer = Customer::where('email',$request->email)->first();
+    {
+        // {
+        //     "email": "test@test.com",
+        //     "name": "Harmit",
+        //     "mobile": "9485495837",
+        //     "people": "75",
+        //     "section": "Ground Floor",
+        //     "section_id": 1,
+        // "table_ids": [
+        //     2
+        // ]
+        // }
+
+        // dd($request);
+        $customer_id = null;
+        $customer = Customer::where('email', $request->email)->first();
+        if ($customer) {
+            $customer_id = $customer->id;
+        }
         $allAvailable = 1;
-        if(!$customer){
+        if (!$customer) {
             $customer = new Customer();
             $customer->email = $request->email;
             $customer->name = $request->name;
             $customer->mobile = $request->mobile;
             $customer->save();
+            $customer_id = $customer->id;
         }
         foreach ($request->table_ids as $table_id) {
             $table = Table::find($table_id);
-            if($table->status == "Available"){
+
+            if ($table->status == "Available") {
                 $table->status = "Assigned";
                 $table->assigned_to = $customer->id;
-            }else{
-                $GLOBALS[$allAvailable]=0;
+                $table->save();
+            } else {
+                $GLOBALS[$allAvailable] = 0;
             }
             $table->save();
         }
 
-        if($allAvailable){
+        if ($allAvailable) {
             return response()->json([
-                "code"=> "200",
-                "status"=>"true",
-                "message"=>"Tables assigned successfully",
-            ],200);
-        }else{
+                "code" => "200",
+                "status" => "true",
+                "message" => "Tables assigned successfully",
+                "data" => $customer_id
+            ], 200);
+        } else {
             return response()->json([
-                "code"=> "200",
-                "status"=>"false",
-                "message"=>"Only available tables are assigned",
-            ],200);
+                "code" => "200",
+                "status" => "false",
+                "message" => "Only available tables are assigned",
+            ], 200);
         }
-
-
     }
 }

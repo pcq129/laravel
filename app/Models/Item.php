@@ -23,6 +23,16 @@ class Item extends Model
         return $this->belongsToMany(ModifierGroup::class, 'item_modifier_groups_mapping', 'item_id', 'modifier_group_id');
     }
 
+    /**
+     * The order that belong to the Item
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function order(): BelongsToMany
+    {
+        return $this->belongsToMany(Order::class, 'item_order_mapper', 'item_id', 'order_id');
+    }
+
 
     protected $hidden = [
         'deleted_at',

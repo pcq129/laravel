@@ -13,7 +13,8 @@ use App\Http\Controllers\API\SectionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\TableController;
 use App\Http\Controllers\API\TaxFeeController;
-use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\API\CustomerController;
+use App\Http\Controllers\API\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +45,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('/section',SectionController::class);
     Route::resource('/table',TableController::class);
     Route::resource('/tax-fees',TaxFeeController::class);
+    Route::resource('/order',OrderController::class);
     Route::get('/sectionstable/{id}',[TableController::class, 'indexBySection']);
     Route::put('/tax-fees-toggle/{id}',[TaxFeeController::class, 'toggle']);
     Route::post('/upload-image',[ItemController::class, 'image']);

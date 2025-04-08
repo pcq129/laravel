@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Item;
+use App\Models\ModifierGroup;
+use App\Models\Modifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
@@ -20,16 +22,16 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $items = Item::with(['Category'=> function($query){
-            $query->select ('item_categories.id','name');
-        }, 'ModifierGroups'=> function($query){
-            $query->select ('modifier_groups.id', 'name');
+        $items = Item::with(['Category' => function ($query) {
+            $query->select('item_categories.id', 'name');
+        }, 'ModifierGroups' => function ($query) {
+            $query->select('modifier_groups.id', 'name');
         }])->orderBy('created_at', 'desc')->get();
         return response()->json([
             'code' => '200',
             'status' => 'true',
             'data' => $items,
-            'message'=> 'Items fetched successfully'
+            'message' => 'Items fetched successfully'
         ], 200);
     }
 
@@ -44,19 +46,19 @@ class ItemController extends Controller
 
 
         $validator = Validator::make($request->all(), [
-            'name' => ['required','string','max:50',Rule::unique('items', 'name')->withoutTrashed()],
+            'name' => ['required', 'string', 'max:50', Rule::unique('items', 'name')->withoutTrashed()],
             'rate' => 'required|numeric',
-            'unit'=> ['required',Rule::in(['pcs','gms'])],
-            'image'=> 'nullable|string',
+            'unit' => ['required', Rule::in(['pcs', 'gms'])],
+            'image' => 'nullable|string',
             'quantity' => 'required|numeric',
-            'item_type'=> ['required', Rule::in(['veg','non-veg','vegan'])],
-            'available'=> ['required','boolean'],
-            'short_code'=> ['numeric','nullable'],
-            'default_tax'=> ['required','boolean'],
+            'item_type' => ['required', Rule::in(['veg', 'non-veg', 'vegan'])],
+            'available' => ['required', 'boolean'],
+            'short_code' => ['numeric', 'nullable'],
+            'default_tax' => ['required', 'boolean'],
             'category_id' => 'required|min_digits:1|max_digits:3|exists:item_categories,id',
             'description' => 'string|nullable|max:180',
             'tax_percentage' => 'numeric|min:0|max:60',
-            'modifier_groups_id'=> ['nullable'],
+            'modifier_groups_id' => ['nullable'],
         ], [
             'name' => 'Invalid name',
             'rate' => 'Invalid price',
@@ -80,12 +82,12 @@ class ItemController extends Controller
         $newItem->tax_percentage = $request->tax_percentage;
         $newItem->unit = $request->unit;
         $newItem->item_type = $request->item_type;
-        $newItem->available = $request->available ;
-        $newItem->short_code = $request->short_code ;
-        $newItem->image = $request->image ;
-        $newItem->default_tax = $request->default_tax ;
+        $newItem->available = $request->available;
+        $newItem->short_code = $request->short_code;
+        $newItem->image = $request->image;
+        $newItem->default_tax = $request->default_tax;
         $newItem->save();
-        if($request->modifier_groups_id){
+        if ($request->modifier_groups_id) {
             $newItem->ModifierGroups()->sync($request->modifier_groups_id);
         }
 
@@ -101,23 +103,24 @@ class ItemController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request)
+    public function show($id)
     {
 
-        $validator = Validator::make($request->all(), [
-            'id'=>'required'
-        ]);
-        if($validator->fails()){
-            return response()->json(['code' => 400, 'status' => 'false', 'message' => $validator->messages(),], 200);
-        }
+        // $validator = Validator::make($request->all(), [
+        //     'id'=>'required'
+        // ]);
+        // if($validator->fails()){
+        //     return response()->json(['code' => 400, 'status' => 'false', 'message' => $validator->messages(),], 200);
+        // }
 
-        $item = Item::find($request->id);
-        if($item){
+
+        $item = Item::with(['ModifierGroups.Modifiers'])->find($id);
+        if ($item) {
             return response()->json([
                 'code' => '200',
                 'status' => 'true',
                 'data' => $item,
-                'message'=>'Item fetched successfully'
+                'message' => 'Item fetched successfully'
             ], 200);
         }
         return response()->json([
@@ -136,19 +139,19 @@ class ItemController extends Controller
         // dd($request);
         $validator = Validator::make($request->all(), [
             'id' => ['required'],
-            'name' => ['required','string','max:50',Rule::unique('items', 'name')->ignore($request->id, 'id')->withoutTrashed()],
+            'name' => ['required', 'string', 'max:50', Rule::unique('items', 'name')->ignore($request->id, 'id')->withoutTrashed()],
             'rate' => 'required|numeric',
-            'unit'=> ['required',Rule::in(['pcs','gms'])],
-            'image'=> 'nullable|string',
+            'unit' => ['required', Rule::in(['pcs', 'gms'])],
+            'image' => 'nullable|string',
             'quantity' => 'required|numeric',
-            'item_type'=> ['required', Rule::in(['veg','non-veg','vegan'])],
-            'available'=> ['required','boolean'],
-            'short_code'=> ['numeric','nullable'],
-            'default_tax'=> ['required','boolean'],
+            'item_type' => ['required', Rule::in(['veg', 'non-veg', 'vegan'])],
+            'available' => ['required', 'boolean'],
+            'short_code' => ['numeric', 'nullable'],
+            'default_tax' => ['required', 'boolean'],
             'category_id' => 'required|min_digits:1|max_digits:3|exists:item_categories,id',
             'description' => 'string|nullable|max:180',
             'tax_percentage' => 'numeric|min:0|max:60',
-            'modifier_groups_id'=> ['nullable'],
+            'modifier_groups_id' => ['nullable'],
             // 'name' => ['required','string','max:50',Rule::unique('item_categories', 'name')->withoutTrashed()->ignore($request->id)],
             // // 'name' => 'required|string|max:50|unique:App\Models\Item,name,'.$request->id.',id',
             // 'description' => 'nullable|string|max:180',
@@ -168,7 +171,6 @@ class ItemController extends Controller
         if ($validator->fails()) {
             return response()->json(['code' => 400, 'status' => 'false', 'message' => $validator->messages(),], 200);
         }
-        // dd($request->image);
         $item = Item::find($request->id);
         $item->name = $request->name;
         $item->description = $request->description;
@@ -178,12 +180,14 @@ class ItemController extends Controller
         $item->tax_percentage = $request->tax_percentage;
         $item->unit = $request->unit;
         $item->item_type = $request->item_type;
-        $item->available = $request->available ;
-        $item->short_code = $request->short_code ;
-        $item->image = $request->image ;
-        $item->default_tax = $request->default_tax ;
+        $item->available = $request->available;
+        $item->short_code = $request->short_code;
+        if ($request->image) {
+            $item->image = $request->image;
+        }
+        $item->default_tax = $request->default_tax;
         $item->update();
-        if($request->modifier_groups_id){
+        if ($request->modifier_groups_id) {
             $item->ModifierGroups()->sync($request->modifier_groups_id);
         }
 
@@ -209,7 +213,7 @@ class ItemController extends Controller
     public function destroy($id)
     {
         $item = Item::find($id);
-        if($item){
+        if ($item) {
             $item->delete();
             return response()->json([
                 'code' => '204',
@@ -225,7 +229,8 @@ class ItemController extends Controller
         ],  200);
     }
 
-    public function image(Request $request){
+    public function image(Request $request)
+    {
         if (!$request->hasFile('image')) {
             return response()->json(['message' => 'No file uploaded'], 400);
         }
@@ -236,15 +241,15 @@ class ItemController extends Controller
         return response()->json(['message' => 'Image uploaded successfully', 'path' => $filename], 200);
     }
 
-    public function removeImage($image){
-        $file_path = public_path('storage\\uploads\\'.$image);
-        if(File::exists($file_path)){
+    public function removeImage($image)
+    {
+        $file_path = public_path('storage\\uploads\\' . $image);
+        if (File::exists($file_path)) {
             File::delete($file_path);
             return response()->json([
                 "message" => "Previous image deleted"
             ]);
-        }
-        else{
+        } else {
             return response()->json([
                 "message" => "file not found"
             ]);

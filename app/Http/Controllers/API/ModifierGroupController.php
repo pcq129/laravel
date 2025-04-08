@@ -66,13 +66,13 @@ class ModifierGroupController extends Controller
         //     return response()->json(['code' => 400, 'status' => 'false', 'message' => $validator->messages(),], 200);
         // }
 
-        $modifierGroup = ModifierGroup::find($id);
+        $modifierGroup = ModifierGroup::with('Modifiers')->find($id);
         if ($modifierGroup) {
             return response()->json([
                 'code' => '200',
                 'status' => 'true',
                 'data' => $modifierGroup,
-                'message' => 'Modifier-Group deleted successfully'
+                'message' => 'Modifier-Group fetched successfully'
             ], 200);
         }
         return response()->json([
