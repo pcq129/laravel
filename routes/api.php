@@ -15,6 +15,7 @@ use App\Http\Controllers\API\TableController;
 use App\Http\Controllers\API\TaxFeeController;
 use App\Http\Controllers\API\CustomerController;
 use App\Http\Controllers\API\OrderController;
+use App\Models\Section;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,9 +47,16 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('/table',TableController::class);
     Route::resource('/tax-fees',TaxFeeController::class);
     Route::resource('/order',OrderController::class);
+    Route::resource('/customers',CustomerController::class);
     Route::get('/sectionstable/{id}',[TableController::class, 'indexBySection']);
+    Route::get('/waiting-tokens',[SectionController::class, 'waiting_token']);
     Route::put('/tax-fees-toggle/{id}',[TaxFeeController::class, 'toggle']);
     Route::post('/upload-image',[ItemController::class, 'image']);
     Route::delete('/upload-image/{image}',[ItemController::class, 'removeImage']);
     Route::post('/customer/assign-table', [CustomerController::class, 'assign_table']);
+    Route::post('/customer/waiting-token', [CustomerController::class, 'create_waiting_token']);
+    Route::post('/customer/update-waiting-token', [CustomerController::class, 'update_waiting_token']);
+    Route::post('order/{id}', [OrderController::class, 'complete_order']);
+    Route::put('order', [OrderController::class, 'cancel_order']);
+    Route::post('customer/search', [CustomerController::class, 'searchCustomer']);
 });

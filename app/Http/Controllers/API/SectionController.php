@@ -25,6 +25,19 @@ class SectionController extends Controller
         ],200);
     }
 
+    public function waiting_token(){
+        $tokens = Section::with('customers')->get();
+        return response()->json([
+            "code"=>"200",
+            "status"=>"true",
+            "data"=>$tokens,
+            "message"=>"Waiting list fetched successfully"
+        ]);
+    }
+
+
+
+
     /**
      * Show the form for storing a new resource.
      */

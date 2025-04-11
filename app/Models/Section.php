@@ -21,6 +21,16 @@ class Section extends Model
         return $this->hasMany(Table::class, 'section_id', 'id');
     }
 
+    /**
+     * Get all of the customers for the Section
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function customers(): HasMany
+    {
+        return $this->hasMany(Customer::class, 'section_id', 'id');
+    }
+
     protected $hidden = [
         'deleted_at',
         'updated_at',
@@ -31,4 +41,6 @@ class Section extends Model
         'name',
         'description',
     ];
+
+
 }
